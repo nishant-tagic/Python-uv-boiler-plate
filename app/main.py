@@ -32,12 +32,7 @@ logger = get_logger(__name__)
 setup_cors(app, config)
 
 # 2. Security Middleware
-app.add_middleware(
-    SecurityMiddleware,
-    api_version=config.APP_VERSION,
-    environment=config.ENVIRONMENT,
-    log_threshold=config.LOG_RESPONSE_TIME_THRESHOLD
-)
+app.add_middleware(SecurityMiddleware)
 
 # 3. Trusted Hosts
 if config.ENVIRONMENT in [EnvironmentOption.PRODUCTION, EnvironmentOption.UAT]:
