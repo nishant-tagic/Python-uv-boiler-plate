@@ -1,14 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.config.settings import SecurityConfig, Environment
+from app.config.config import Settings
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-def setup_cors(app: FastAPI, config: SecurityConfig) -> None:
+def setup_cors(app: FastAPI, config: Settings) -> None:
     """Setup CORS with environment-aware configuration"""
     
-    allowed_origins = config.cors_origins
+    allowed_origins = config.CORS_ORIGINS
     logger.info(f"CORS allowed origins: {allowed_origins}")
 
     app.add_middleware(
@@ -25,6 +25,5 @@ def setup_cors(app: FastAPI, config: SecurityConfig) -> None:
         expose_headers=[
             "X-Request-ID", 
             "X-Process-Time", 
-            "X-RateLimit-Remaining"
         ],
     )
