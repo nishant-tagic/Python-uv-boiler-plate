@@ -1,16 +1,17 @@
 import os
+
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.config.config import Settings, EnvironmentOption
+from app.api.health import router
+from app.config.config import EnvironmentOption, Settings
+from app.core.logging import get_logger, setup_logging
 from app.middleware.cors import setup_cors
 from app.middleware.security import SecurityMiddleware
-from app.core.logging import setup_logging, get_logger
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from app.api.health import router
 
 # Load configuration
 config = Settings()
@@ -19,7 +20,7 @@ config = Settings()
 app = FastAPI(
     title=config.APP_NAME,
     description=config.APP_DESCRIPTION,
-    version=config.APP_VERSION
+    version=config.APP_VERSION,
 )
 
 # Setup logging
@@ -40,10 +41,7 @@ if config.ENVIRONMENT in [EnvironmentOption.PRODUCTION, EnvironmentOption.UAT]:
 else:
     allowed_hosts = ["*"]
 
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=list(config.TRUSTED_HOSTS)
-)
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=list(config.TRUSTED_HOSTS))
 
 # 4. GZip Compression
 app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
@@ -51,13 +49,16 @@ app.add_middleware(GZipMiddleware, minimum_size=1000, compresslevel=5)
 
 # --- Exception Handlers ---
 
+
 @app.exception_handler(StarletteHTTPException)
-async def http_exception_handler(_: Request, exc: StarletteHTTPException) -> JSONResponse:
+async def http_exception_handler(
+    _: Request, exc: StarletteHTTPException
+) -> JSONResponse:
     logger.exception(exc)
     return JSONResponse(
-        status_code=exc.status_code,
-        content={"error": True, "message": exc.detail}
+        status_code=exc.status_code, content={"error": True, "message": exc.detail}
     )
+
 
 @app.exception_handler(Exception)
 async def uncaught_exception_handler(_: Request, exc: Exception) -> JSONResponse:
@@ -70,12 +71,15 @@ async def uncaught_exception_handler(_: Request, exc: Exception) -> JSONResponse
         },
     )
 
+
 # --- Routes ---
+
 
 @app.get("/")
 def root():
     logger.info("Root endpoint called")
     return {"Hello": "World"}
+
 
 # Include API router
 app.include_router(router)
@@ -87,9 +91,12 @@ if __name__ == "__main__":
         "app": "app.main:app",
         "host": "0.0.0.0",
         "port": int(os.getenv("PORT", "8000")),
-        "log_level": "debug" if config.ENVIRONMENT in [EnvironmentOption.LOCAL, EnvironmentOption.DEV] else "info",
+        "log_level": "debug"
+        if config.ENVIRONMENT in [EnvironmentOption.LOCAL, EnvironmentOption.DEV]
+        else "info",
         "access_log": config.ENABLE_REQUEST_LOGGING,
-        "reload": config.ENVIRONMENT in [EnvironmentOption.LOCAL, EnvironmentOption.DEV],
+        "reload": config.ENVIRONMENT
+        in [EnvironmentOption.LOCAL, EnvironmentOption.DEV],
     }
 
     logger.info(f"Starting FastAPI app in {config.ENVIRONMENT} environment")

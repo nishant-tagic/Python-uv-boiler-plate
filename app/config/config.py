@@ -1,13 +1,14 @@
 from enum import Enum
+
 from pydantic_settings import BaseSettings
-from pydantic import SecretStr
-from typing import List
+
 
 class EnvironmentOption(str, Enum):
     LOCAL = "local"
     DEV = "dev"
     UAT = "uat"
     PRODUCTION = "production"
+
 
 class Settings(BaseSettings):
     # App Info
@@ -20,8 +21,8 @@ class Settings(BaseSettings):
 
     # Environment
     ENVIRONMENT: EnvironmentOption = EnvironmentOption.LOCAL
-    CORS_ORIGINS: List[str] = ["http://localhost:3000"]
-    TRUSTED_HOSTS: List[str] = ["localhost"]
+    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    TRUSTED_HOSTS: list[str] = ["localhost"]
     LOG_RESPONSE_TIME_THRESHOLD: float = 2.0
     ENABLE_REQUEST_LOGGING: bool = True
 
