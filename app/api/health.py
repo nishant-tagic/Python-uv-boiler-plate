@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Request
 import time
+
+from fastapi import APIRouter, Request
 
 router = APIRouter(prefix="", tags=["health"])
 

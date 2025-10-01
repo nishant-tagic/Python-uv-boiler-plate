@@ -1,6 +1,8 @@
-from loguru import logger
-from typing import Dict, Any
 import json
+from typing import Any, dict
+
+from loguru import logger
+
 from app.config.config import EnvironmentOption
 
 # Environment to log level mapping
@@ -19,13 +21,13 @@ def get_log_level_for_environment(environment: EnvironmentOption) -> str:
 def setup_logging(environment: EnvironmentOption = None, log_level: str = None) -> None:
     """
     Setup logging with environment-based log levels.
-    
+
     Args:
         environment: The environment option (will determine log level if log_level not provided)
         log_level: Explicit log level override (if provided, takes precedence over environment)
     """
     logger.remove()
-    
+
     # Determine log level: explicit override > environment-based > default INFO
     if log_level:
         final_log_level = log_level.upper()
@@ -33,7 +35,7 @@ def setup_logging(environment: EnvironmentOption = None, log_level: str = None) 
         final_log_level = get_log_level_for_environment(environment)
     else:
         final_log_level = "INFO"
-    
+
     def custom_json_sink(message):
         record = message.record
         log_object = {
@@ -52,7 +54,7 @@ def setup_logging(environment: EnvironmentOption = None, log_level: str = None) 
         if record["extra"]:
             log_object.update(record["extra"])
         print(json.dumps(log_object), flush=True)
-    
+
     logger.add(
         custom_json_sink,
         level=final_log_level,
@@ -60,7 +62,7 @@ def setup_logging(environment: EnvironmentOption = None, log_level: str = None) 
         backtrace=False,
         diagnose=False,
     )
-    
+
     # Log the logging configuration
     logger.debug(f"Logging initialized with level: {final_log_level}")
 
@@ -70,7 +72,7 @@ def get_logger(name: str = None):
     return logger.bind(module=name) if name else logger
 
 
-def log_request(logger_obj, request_data: Dict[str, Any]) -> None:
+def log_request(logger_obj, request_data: dict[str, Any]) -> None:
     """Log request information in a JSON structured format."""
     logger_obj.info(
         "request_completed",
@@ -83,7 +85,7 @@ def log_request(logger_obj, request_data: Dict[str, Any]) -> None:
     )
 
 
-def log_slow_request(logger_obj, request_data: Dict[str, Any]) -> None:
+def log_slow_request(logger_obj, request_data: dict[str, Any]) -> None:
     logger_obj.warning(
         "slow_request_detected",
         request_id=request_data.get("request_id"),

@@ -1,16 +1,17 @@
 import os
+
 import uvicorn
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.config.config import Settings, EnvironmentOption
+from app.api.health import router
+from app.config.config import EnvironmentOption, Settings
+from app.core.logging import get_logger, setup_logging
 from app.middleware.cors import setup_cors
 from app.middleware.security import SecurityMiddleware
-from app.core.logging import setup_logging, get_logger
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from app.api.health import router
 
 # Load configuration
 config = Settings()

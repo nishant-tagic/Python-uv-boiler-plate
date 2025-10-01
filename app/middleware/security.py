@@ -1,13 +1,14 @@
 import time
 import uuid
-from typing import Callable, Dict
+from collections.abc import Callable
+from typing import dict
 
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
-from app.core.logging import get_logger, log_request, log_slow_request
 from app.config.config import Settings
+from app.core.logging import get_logger, log_request, log_slow_request
 
 logger = get_logger(__name__)
 settings = Settings()  # Load settings once
@@ -27,7 +28,7 @@ class SecurityMiddleware(BaseHTTPMiddleware):
         self.log_threshold = settings.LOG_RESPONSE_TIME_THRESHOLD
         self._static_headers = self._build_static_headers()
 
-    def _build_static_headers(self) -> Dict[str, str]:
+    def _build_static_headers(self) -> dict[str, str]:
         """
         Headers that don't change per request.
         Adds HSTS for production/staging.

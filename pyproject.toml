@@ -3,5 +3,38 @@ name = "sample-project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.12.0"
 dependencies = []
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "C",  # Complexity & comprehensions
+    "UP", # pyupgrade (modern Python upgrades)
+    "I",  # isort (import sorting)
+]
+ignore = [
+    "E402",  # module level import not at top of file
+    "UP006", # use PEP585 annotations
+    "UP007", # use PEP604 annotations
+    "E741",  # Ambiguous variable name
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # unused import
+    "F403", # star imports
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
