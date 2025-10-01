@@ -74,6 +74,7 @@ async def uncaught_exception_handler(_: Request, exc: Exception) -> JSONResponse
 
 # --- Routes ---
 
+
 @app.get("/ping", tags=["Health"], summary="Ping", response_description="Pong response")
 def ping():
     """
