@@ -1,32 +1,38 @@
-name: Ruff Linting check
+name: Lint and Format Check
 
 on:
   push:
-    branches:
-      - dev
+    branches: [dev, uat, release]
   pull_request:
-    branches:
-      - dev
+    branches: [dev, uat, release]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.12
+          python-version: '3.12'
 
-      - name: Install uv
-        run: pip install uv
+      - name: Install UV
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      - name: Create virtual environment
-        run: uv venv
+      - name: Install dependencies
+        run: |
+          uv sync --frozen --dev
 
-      - name: Sync dependencies from uv.lock
-        run: uv sync --dev
+      - name: Run Ruff linting
+        run: |
+          uv run ruff check . --output-format=github
 
-      - name: Run Ruff
-        run: uv run ruff check src
+      - name: Run Ruff formatting check
+        run: |
+          uv run ruff format --check .
