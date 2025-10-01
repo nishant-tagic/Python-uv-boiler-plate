@@ -74,11 +74,13 @@ async def uncaught_exception_handler(_: Request, exc: Exception) -> JSONResponse
 
 # --- Routes ---
 
-
-@app.get("/")
-def root():
-    logger.info("Root endpoint called")
-    return {"Hello": "World"}
+@app.get("/ping", tags=["Health"], summary="Ping", response_description="Pong response")
+def ping():
+    """
+    Simple ping endpoint for uptime checks.
+    """
+    logger.info("Ping endpoint called")
+    return {"message": "pong"}
 
 
 # Include API router
