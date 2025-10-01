@@ -3,5 +3,89 @@ name = "sample-project"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = []
+requires-python = ">=3.12.0"
+dependencies = [
+    "annotated-types==0.7.0",
+    "anyio==4.11.0",
+    "certifi==2025.8.3",
+    "click==8.3.0",
+    "dnspython==2.8.0",
+    "email-validator==2.3.0",
+    "fastapi==0.117.1",
+    "fastapi-cli==0.0.13",
+    "fastapi-cloud-cli==0.2.1",
+    "h11==0.16.0",
+    "httpcore==1.0.9",
+    "httptools==0.6.4",
+    "httpx==0.28.1",
+    "idna==3.10",
+    "itsdangerous==2.2.0",
+    "jinja2==3.1.6",
+    "loguru==0.7.3",
+    "markdown-it-py==4.0.0",
+    "markupsafe==3.0.3",
+    "mdurl==0.1.2",
+    "orjson==3.11.3",
+    "pydantic==2.11.9",
+    "pydantic-core==2.33.2",
+    "pydantic-extra-types==2.10.5",
+    "pydantic-settings==2.11.0",
+    "pygments==2.19.2",
+    "python-dotenv==1.1.1",
+    "python-multipart==0.0.20",
+    "pyyaml==6.0.3",
+    "rich==14.1.0",
+    "rich-toolkit==0.15.1",
+    "rignore==0.6.4",
+    "sentry-sdk==2.39.0",
+    "shellingham==1.5.4",
+    "sniffio==1.3.1",
+    "starlette==0.48.0",
+    "typer==0.19.2",
+    "typing-extensions==4.15.0",
+    "typing-inspection==0.4.1",
+    "ujson==5.11.0",
+    "urllib3==2.5.0",
+    "uvicorn==0.37.0",
+    "uvloop==0.21.0",
+    "watchfiles==1.1.0",
+    "websockets==15.0.1",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    "F",  # Pyflakes
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "C",  # Complexity & comprehensions
+    "UP", # pyupgrade (modern Python upgrades)
+    "I",  # isort (import sorting)
+]
+ignore = [
+    "E402",  # module level import not at top of file
+    "UP006", # use PEP585 annotations
+    "UP007", # use PEP604 annotations
+    "E741",  # Ambiguous variable name
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = [
+    "F401", # unused import
+    "F403", # star imports
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.13.2",
+]
