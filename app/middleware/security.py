@@ -1,7 +1,6 @@
 import time
 import uuid
 from collections.abc import Callable
-from typing import dict
 
 from fastapi import Request, Response
 from fastapi.responses import JSONResponse

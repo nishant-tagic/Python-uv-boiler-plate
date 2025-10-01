@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import list
 
 from pydantic_settings import BaseSettings
 
@@ -20,11 +19,12 @@ class Settings(BaseSettings):
     CONTACT_EMAIL: str | None = None
 
     # Environment
+    # Environment
     ENVIRONMENT: EnvironmentOption = EnvironmentOption.LOCAL
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
     TRUSTED_HOSTS: list[str] = ["localhost"]
-    LOG_RESPONSE_TIME_THRESHOLD: float = 2.0
     ENABLE_REQUEST_LOGGING: bool = True
+    LOG_RESPONSE_TIME_THRESHOLD: float = 2.0  # seconds
 
     class Config:
         env_file = ".env"
