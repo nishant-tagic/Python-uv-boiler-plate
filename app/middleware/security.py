@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.config.config import Settings
+from app.core.context import set_request_id
 from app.core.logging import get_logger, log_request, log_slow_request
 
 logger = get_logger(__name__)
@@ -20,7 +21,6 @@ class SecurityMiddleware(BaseHTTPMiddleware):
 
     def __init__(self, app):
         super().__init__(app)
-
         # Pull configuration from Settings
         self.api_version = settings.APP_VERSION or "1.0"
         self.environment = settings.ENVIRONMENT.value  # Enum -> string
@@ -53,31 +53,43 @@ class SecurityMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         request_id = str(uuid.uuid4())
         request.state.request_id = request_id
+
+        # Set request_id in context - now ALL logs will include it automatically
+        set_request_id(request_id)
+
         start_time = time.time()
 
         try:
+            logger.info(
+                "Request started",
+                method=request.method,
+                path=str(request.url.path),
+                client=request.client.host if request.client else None,
+            )
+
             response = await call_next(request)
+
         except Exception as exc:
-            logger.error(f"Request {request_id} failed: {exc}", exc_info=True)
+            logger.opt(exception=True).error(
+                "Request failed",
+                error=str(exc),
+            )
             return self._build_error_response(request_id)
 
         process_time = time.time() - start_time
         self._add_response_headers(response, request_id, process_time)
 
-        # Logging request details
         log_data = {
             "method": request.method,
             "path": str(request.url.path),
             "status_code": response.status_code,
-            "process_time_ms": round(process_time * 1000, 2),
-            "request_id": request_id,
+            "process_time": process_time,
             "request_size": request.headers.get("content-length"),
             "response_size": response.headers.get("content-length"),
         }
 
         log_request(logger, log_data)
 
-        # Log slow requests
         if process_time > self.log_threshold:
             log_slow_request(logger, log_data)
 
