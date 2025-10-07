@@ -8,6 +8,7 @@ router = APIRouter()
 file_handler = FileUploadHandler()
 logger = get_logger(__name__)
 
+
 def get_file_handler() -> FileUploadHandler:
     return file_handler
 
@@ -17,7 +18,6 @@ async def upload_file(
     file: UploadFile = File(...),
     handler: FileUploadHandler = Depends(get_file_handler),
 ):
-
     try:
         logger.info("File upload started")
 

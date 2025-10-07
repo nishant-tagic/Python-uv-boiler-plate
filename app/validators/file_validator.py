@@ -62,13 +62,13 @@ class FileValidator:
     ) -> int:
         if max_size is None:
             max_size = FileConfig.MAX_FILE_SIZE
-        
+
         # Read the entire file to get its size
         # UploadFile.seek() doesn't support whence parameter
         content = await file.read()
         size = len(content)
         await file.seek(0)  # Reset to beginning
-        
+
         if size > max_size:
             raise HTTPException(
                 status_code=status.HTTP_413_CONTENT_TOO_LARGE,

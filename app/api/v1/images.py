@@ -90,7 +90,7 @@ async def upload_image(
             extra={
                 "request_id": request_id,
                 "filename": getattr(file, "filename", None),
-                "error": str(e)
+                "error": str(e),
             },
         )
         raise HTTPException(status_code=500, detail="Internal server error")

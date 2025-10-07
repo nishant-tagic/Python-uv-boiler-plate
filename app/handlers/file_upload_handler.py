@@ -80,4 +80,5 @@ class FileUploadHandler:
         self.logger.info("File saved temporarily", file_path=str(file_path))
         return file_path
 
+
 file_handler = FileUploadHandler()

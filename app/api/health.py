@@ -9,7 +9,6 @@ router = APIRouter(prefix="", tags=["health"])
 
 @router.get("/ping")
 async def health_check(request: Request):
-    
     logger = get_logger(__name__)
     """health check endpoint"""
     logger.info("Health check endpoint called")
