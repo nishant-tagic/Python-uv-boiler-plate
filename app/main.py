@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.health import router
+from app.api.v1 import files, images, pdfs, spreadsheets
 from app.config.config import EnvironmentOption, Settings
 from app.core.logging import get_logger, setup_logging
 from app.middleware.cors import setup_cors
@@ -85,7 +86,11 @@ def ping():
 
 
 # Include API router
-app.include_router(router)
+app.include_router(router, prefix="/api")
+app.include_router(files.router, prefix="/api/v1/files")
+app.include_router(images.router, prefix="/api/v1/files/images")
+app.include_router(pdfs.router, prefix="/api/v1/files/pdf")
+app.include_router(spreadsheets.router, prefix="/api/v1/files")
 
 # --- Run Uvicorn ---
 

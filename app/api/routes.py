@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request
 
-router = APIRouter(prefix="/api", tags=["api"])
+router = APIRouter(prefix="", tags=["health"])
 
 
 @router.get("/")
@@ -13,11 +13,10 @@ async def get_data(request: Request):
     }
 
 
-@router.post("/data")
-async def create_data(request: Request, data: dict):
+@router.get("/data")
+async def create_data(request: Request):
     """Example POST endpoint"""
     return {
         "message": "Data created successfully",
-        "data": data,
         "request_id": getattr(request.state, "request_id", "unknown"),
     }

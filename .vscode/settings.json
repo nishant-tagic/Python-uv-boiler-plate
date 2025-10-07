@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true,
+  "ruff.enable": true,
+  "ruff.organizeImports": true,
+  "ruff.path": ["ruff"], 
+}
